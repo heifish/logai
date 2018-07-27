@@ -12,21 +12,6 @@ return -->file list . like ['D:\\projects\\logai\\logai\\1113天津滨海\\2018�
 '''
 
 import os ,sys
-#遍历文件夹,返回文件列表，可迭代代码，测试用
-def getFixFiles(directory,prefix=None,postfix=None):
-    files_list=[]
-    
-    for root, sub_dirs, files in os.walk(directory):
-        for special_file in files:
-            if postfix:
-                if special_file.endswith(postfix):
-                    files_list.append(os.path.join(root,special_file))
-            elif prefix:
-                if special_file.startswith(prefix):
-                    files_list.append(os.path.join(root,special_file))
-            else:
-                files_list.append(os.path.join(root,special_file))
-    return files_list
 
 #正式用函数
 def getDateFiles(directory,sdate):
@@ -49,7 +34,7 @@ def getDateFiles(directory,sdate):
             for sfd in sf_path:
                 if sm == sfm and sd == sfd:
                     re_files.append(sf)
-                    print('find a match file %s' %sf)
+                    #print('find a match file %s' %sf)
                     break
 
             
