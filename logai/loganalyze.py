@@ -32,7 +32,7 @@ def oraAnalyze(logfile,oraknowlib):
         for okl in oraknowlib:
             action = ora.findAction(okl)
             if action is not None:
-                print('errnum is %r,errtime is %r, action is %r'%(ora.errnum,ora.errtimenum,action))
+                print('errnum is %r,errtime is %r\naction is %r'%(ora.errnum,ora.errtimenum,action))
 
 
 
