@@ -7,33 +7,40 @@
 '''
 import os,sys
 
-import db2diag as _db2diag
-import oraclealert as _oraclealert
+# import db2diag as _db2diag
+import oraclealert
 
 
-def db2Analyze(logfile):
-    ScriptPath = '\\'.join(logfile.split('\\')[:-1])
-    logname = logfile.split('\\')[-1]
-    os.chdir(ScriptPath)
-    a = _db2diag.filterLogBlock(logname)
-    print('logpath is %r,logname is %r'%(ScriptPath,logname))
-    _db2diag.getInfo(logname,a)
+# def db2Analyze(logfile):
+#     ScriptPath = '\\'.join(logfile.split('\\')[:-1])
+#     logname = logfile.split('\\')[-1]
+#     os.chdir(ScriptPath)
+#     a = _db2diag.filterLogBlock(logname)
+#     print('logpath is %r,logname is %r'%(ScriptPath,logname))
+#     _db2diag.getInfo(logname,a)
 
 
 
 
 def oraAnalyze(logfile,oraknowlib):
-    ScriptPath = '\\'.join(logfile.split('\\')[:-1])
-    logname = logfile.split('\\')[-1]
-    os.chdir(ScriptPath)
+    # ScriptPath = '\\'.join(logfile.split('\\')[:-1])
+    # logname = logfile.split('\\')[-1]
+    # os.chdir(ScriptPath)
     #获取错误日志对象列表
-    oras = _oraclealert.findORA(logname)
-    for ora in oras:
-        for okl in oraknowlib:
-            action = ora.findAction(okl)
-            if action is not None:
-                print('errnum is %r,errtime is %r\naction is %r'%(ora.errnum,ora.errtimenum,action))
-
+    errlog = oraclealert.ErrLog(logfile)
+    errlog.doIt(oraknowlib)
+    filename = logfile + 'analyze.txt'
+    # print(filename,logfile)
+    with open(filename,'w',encoding='utf-8') as fw:
+        for i in range(len(errlog.errlist)) :
+            line = '''
+Find err %r:
+The last error time is %r 
+The error message is %r
+Action is %r
+            '''%(i+1 ,errlog.errlist[i]['last_errtime'] ,errlog.errlist[i]['errmessage'] ,errlog.actionlist[i])
+            fw.write(line)
+    print('====Analyzed file is %r'%filename)
 
 
 if __name__ == '__main__':

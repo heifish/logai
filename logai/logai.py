@@ -90,7 +90,7 @@ class LogFile:
         else:
             return None
 
-    def analyze(self,logclas):
+    def analyze(self,logclas,knowlib):
         # logclas = self.getLogClas()  #自动检测自动分析
         if logclas == self.getLogClas():
             if logclas == 'db2':
@@ -99,24 +99,30 @@ class LogFile:
 
             elif logclas == 'oracle':
                 print('-------It is analyzing %r log %r------------'%(logclas,self.log_fullpath))
-                loganalyze.oraAnalyze(self.log_fullpath,ORACLELIB)
+                loganalyze.oraAnalyze(self.log_fullpath,knowlib)
             else:
-                print('-------log %r is not %r log,do not analyze------------'%(self.log_fullpath,logclas))
+                print('-log %r is not %r log,do not analyze-'%(self.log_fullpath,logclas))
 
         else:
-            print('-------log %r is not %r log,do not analyze------------'%(self.log_fullpath,logclas))
+            print('-log %r is not %r log,do not analyze-'%(self.log_fullpath,logclas))
 
            
 
-
-#定义ftp根目录
-rootdir = r'D:\projects\logai\logai\ftp'
-log_files = []
-#log_file = []
 #请求输入需要获取的日志期数
 #sdate = input('请求输入需要获取的日志期数，类似610，625 [+]:')
 sdate = 610
 #对输入的内容进行排错处理
+
+#定义ftp根目录
+rootdir = r'D:\projects\logai\logai\ftp'
+log_files = []
+
+#获取日志文件集合
+print('----正在获取日志列表----')
+log_files = getDateFiles(rootdir,sdate)
+print('----日志列表获取完成----')
+print('log list is %r'%log_files)
+
 
 #请求输入分析日志类别
 #logclas = input('请输入想要分析的日志类别，类似 oracle , db2 [+]:')
@@ -124,25 +130,14 @@ logclas = 'oracle'
 
 if logclas == 'oracle':
     ora_know = oraclealert.OraKnowLib('D:\\projects\\logai\\logai\\knowlib\\oraclelib')
-    ORACLELIB = ora_know.getLibList()
+    knowlib = ora_know.getLibList()
     print('---init ORACLELIB successful--')
 
-#获取日志文件集合
-print('----正在获取日志列表----')
-log_files = getDateFiles(rootdir,sdate)
-print('----日志列表获取完成----')
-print('log list is %r'%log_files)
-"""#初始化日志对象，自动检测自动分析
 for i in log_files:
     j = LogFile(i)
-    print('It is analyzing %r'%j.log_fullpath)
-    j.analyze()
-#    log_file.append(j)
-"""
+    j.analyze(logclas,knowlib)
 
-for i in log_files:
-    j = LogFile(i)
-    j.analyze(logclas)
+
 
 
 
